@@ -84,7 +84,7 @@ app.post('/addUser', async (req, res) => {
         count: 0,
     })
     temp.save((error, data) => {
-        if (!error) res.sendStatus(200);
-        else res.sendStatus(500);
+        if (!error) res.send(JSON.stringify({ regSuccess: true }));
+        else res.send(JSON.stringify({ regSuccess: false }));
     })
 })
