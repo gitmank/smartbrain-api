@@ -81,7 +81,7 @@ app.post('/addUser', async (req, res) => {
     let temp = new smartBrainUser({
         username: req.body.username,
         password: hashedPassword,
-        count: 0,
+        count: 3,
     })
     temp.save((error, data) => {
         if (!error) res.send(JSON.stringify({ regSuccess: true }));
@@ -123,4 +123,13 @@ app.post('/analyseImage', async (req, res) => {
     .then(result => { return result })
     .catch(error => console.log('error', error));
     res.send(JSON.stringify(result.outputs[0].data));
+})
+
+app.post('/updateCount', (req, res) => {
+    smartBrainUser.findOneAndUpdate({ username: req.body.username }, { count: req.body.count }, (error, data) => {
+        if(!error) {
+            res.send(JSON.stringify({ success: true }))
+        }
+        else res.send(JSON.stringify(0));
+    });
 })
