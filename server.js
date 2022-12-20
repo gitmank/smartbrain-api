@@ -88,3 +88,39 @@ app.post('/addUser', async (req, res) => {
         else res.send(JSON.stringify({ regSuccess: false }));
     })
 })
+
+let createRequestJSON = (link) => {
+    const temp = JSON.stringify({
+        "user_app_id": {
+          "user_id": "clarifai",
+          "app_id": "main"
+        },
+        "inputs": [
+            {
+                "data": {
+                    "image": {
+                        "url": link
+                    }
+                }
+            }
+        ]
+      });
+    return temp;
+}
+
+app.post('/analyseImage', async (req, res) => {
+    let requestBody = createRequestJSON(req.body.link)
+    let requestOptions = {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Key ' + process.env.CLARIFAI_API_KEY,
+        },
+        body: requestBody
+    };
+    let result = await fetch(`https://api.clarifai.com/v2/models/color-recognition/versions/dd9458324b4b45c2be1a7ba84d27cd04/outputs`, requestOptions)
+    .then(response => response.json())
+    .then(result => { return result })
+    .catch(error => console.log('error', error));
+    res.send(JSON.stringify(result.outputs[0].data));
+})
